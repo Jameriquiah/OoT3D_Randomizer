@@ -27,6 +27,10 @@
 #define PlayerDListGroup_EmptySheathChildWithHylianShield ((void*)GAME_ADDR(0x53C4DC))
 
 #define OBJECT_LINK_OPENING 0x19F
+// CMB indices inside zelda_link_boy_new.zar (tunic-specific adult models).
+#define LINK_ADULT_BODY_CMB_INDEX 0
+#define LINK_ADULT_GORON_BODY_CMB_INDEX 4
+#define LINK_ADULT_ZORA_BODY_CMB_INDEX 5
 
 u16 healthDecrement = 0;
 u8 storedMask       = 0;
@@ -35,7 +39,24 @@ static u32 sLastHitFrame = 0;
 static s16 sPrevHealth   = INT16_MAX;
 
 void** Player_EditAndRetrieveCMB(ZARInfo* zarInfo, u32 objModelIdx) {
-    void** cmbMan = ZAR_GetCMBByIndex(zarInfo, objModelIdx);
+    u32 cmbIndex = objModelIdx;
+    if (gSaveContext.linkAge == AGE_ADULT &&
+        (objModelIdx == LINK_ADULT_BODY_CMB_INDEX || objModelIdx == LINK_ADULT_GORON_BODY_CMB_INDEX ||
+         objModelIdx == LINK_ADULT_ZORA_BODY_CMB_INDEX)) {
+        // Swap adult body model based on equipped tunic.
+        u8 currentTunic = (gSaveContext.equips.equipment >> 8) & 3;
+        if (PLAYER->currentTunic != 0) {
+            currentTunic = PLAYER->currentTunic;
+        }
+        if (currentTunic == 2) {
+            cmbIndex = LINK_ADULT_GORON_BODY_CMB_INDEX;
+        } else if (currentTunic == 3) {
+            cmbIndex = LINK_ADULT_ZORA_BODY_CMB_INDEX;
+        } else {
+            cmbIndex = LINK_ADULT_BODY_CMB_INDEX;
+        }
+    }
+    void** cmbMan = ZAR_GetCMBByIndex(zarInfo, cmbIndex);
     void* cmb     = *cmbMan;
 
     if (gSettingsContext.customTunicColors == ON) {
