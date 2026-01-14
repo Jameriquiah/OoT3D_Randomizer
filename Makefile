@@ -172,22 +172,18 @@ ifneq ($(ROMFS),)
 	export _3DSXFLAGS += --romfs=$(CURDIR)/$(ROMFS)
 endif
 
-.PHONY: all clean delete3DSX create_basecode
+.PHONY: all clean create_basecode
 
 #---------------------------------------------------------------------------------
-all: delete3DSX create_basecode $(BUILD) $(GFXBUILD) $(DEPSDIR) $(ROMFS_T3XFILES) $(T3XHFILES)
-	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
-
-delete3DSX:
-	@rm -fr $(TARGET).3dsx
+# Minimal build: only produce the basecode IPS patches.
+#---------------------------------------------------------------------------------
+all: create_basecode
 
 create_basecode:
-ifeq ($(app_only), 0)
 	@$(MAKE) --no-print-directory REGION=USA -C code
 	@mv code/basecode_USA.ips $(ROMFS)
 	@$(MAKE) --no-print-directory REGION=EUR -C code
 	@mv code/basecode_EUR.ips $(ROMFS)
-endif
 
 $(BUILD):
 	@mkdir -p $@
