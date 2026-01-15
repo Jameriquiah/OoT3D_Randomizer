@@ -26,7 +26,11 @@ static u8 Player_GetAdultTunic(void) {
         return 0xFF;
     }
 
-    return (gSaveContext.equips.equipment >> 8) & 3;
+    u8 currentTunic = (gSaveContext.equips.equipment >> 8) & 3;
+    if (PLAYER->currentTunic != 0) {
+        currentTunic = PLAYER->currentTunic;
+    }
+    return currentTunic;
 }
 
 static u32 Player_GetAdultBodyCMBIndex(u8 tunic) {
@@ -61,10 +65,6 @@ static void Player_ReinitAdultTunicSkel(GlobalContext* globalCtx, Player* player
     SkelAnime_InitLink(&player->skelAnime, player->zarInfo, globalCtx, player->cmbMan, player->actor.unk_178, 0, 9,
                        player->jointTable, player->morphTable);
     player->currentTunic = tunic;
-
-    // Force model swap by updating modelGroup and nextModelGroup
-    player->modelGroup = tunic;
-    player->nextModelGroup = tunic;
 }
 
 void** Player_EditAndRetrieveCMB(ZARInfo* zarInfo, u32 objModelIdx) {
@@ -91,15 +91,12 @@ void PlayerActor_rInit(Actor* thisx, GlobalContext* globalCtx) {
 }
 
 void PlayerActor_rUpdate(Actor* thisx, GlobalContext* globalCtx) {
-    Player* player = (Player*)thisx;
     PlayerActor_Update(thisx, globalCtx);
     if (gSaveContext.linkAge == AGE_ADULT) {
         u8 currentTunic = Player_GetAdultTunic();
         if (currentTunic != sLastAdultTunic) {
             sLastAdultTunic = currentTunic;
-            // Aggressive approach: fully respawn player actor
-            PlayerActor_Destroy(thisx, globalCtx);
-            PlayerActor_Init(thisx, globalCtx);
+            Player_ReinitAdultTunicSkel(globalCtx, PLAYER, currentTunic);
         }
     } else {
         sLastAdultTunic = 0xFF;
@@ -111,15 +108,5 @@ void PlayerActor_rDestroy(Actor* thisx, GlobalContext* globalCtx) {
 }
 
 void PlayerActor_rDraw(Actor* thisx, GlobalContext* globalCtx) {
-    Player* player = (Player*)thisx;
-    if (gSaveContext.linkAge == AGE_ADULT) {
-        u8 currentTunic = Player_GetAdultTunic();
-        if (currentTunic != sLastAdultTunic) {
-            sLastAdultTunic = currentTunic;
-            Player_ReinitAdultTunicSkel(globalCtx, player, currentTunic);
-        }
-    } else {
-        sLastAdultTunic = 0xFF;
-    }
     PlayerActor_Draw(thisx, globalCtx);
 }

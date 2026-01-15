@@ -14,22 +14,6 @@ void Actor_Init() {
 }
 
 s32 Actor_IsBoss(Actor* actor) {
-    if (actor == NULL) {
-        return 0;
-    }
-    switch (actor->id) {
-        case 0x0095: // Gohma
-        case 0x0096: // King Dodongo
-        case 0x0097: // Barinade
-        case 0x0098: // Phantom Ganon
-        case 0x0099: // Volvagia
-        case 0x009A: // Morpha
-        case 0x009B: // Bongo Bongo
-        case 0x009C: // Twinrova
-        case 0x009D: // Ganondorf
-        case 0x009E: // Ganon
-            return 1;
-        default:
-            return 0;
-    }
+    (void)actor;
+    return 0;
 }
