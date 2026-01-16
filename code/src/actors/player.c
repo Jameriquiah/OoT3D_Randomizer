@@ -14,6 +14,7 @@
 #define LINK_ADULT_ZORA_BODY_CMB_INDEX 5
 
 static u8 sLastAdultTunic = 0xFF;
+static u8 sPrevPauseState = 0;
 
 typedef void (*SkelAnime_InitLink_proc)(SkelAnime*, ZARInfo*, GlobalContext*, void*, void*, u32, s32, void*, void*);
 #define SkelAnime_InitLink ((SkelAnime_InitLink_proc)GAME_ADDR(0x3413EC))
@@ -26,11 +27,7 @@ static u8 Player_GetAdultTunic(void) {
         return 0xFF;
     }
 
-    u8 currentTunic = (gSaveContext.equips.equipment >> 8) & 3;
-    if (PLAYER->currentTunic != 0) {
-        currentTunic = PLAYER->currentTunic;
-    }
-    return currentTunic;
+    return (gSaveContext.equips.equipment >> 8) & 3;
 }
 
 static u32 Player_GetAdultBodyCMBIndex(u8 tunic) {
@@ -88,10 +85,21 @@ void PlayerActor_rInit(Actor* thisx, GlobalContext* globalCtx) {
     PlayerActor_Init(thisx, globalCtx);
     gGlobalContext = globalCtx;
     sLastAdultTunic = Player_GetAdultTunic();
+    sPrevPauseState = PauseContext_GetState();
 }
 
 void PlayerActor_rUpdate(Actor* thisx, GlobalContext* globalCtx) {
     PlayerActor_Update(thisx, globalCtx);
+    u32 pauseState = PauseContext_GetState();
+
+    // If the pause menu just closed, refresh the tunic immediately to pick up gear changes.
+    if (sPrevPauseState != 0 && pauseState == 0 && gSaveContext.linkAge == AGE_ADULT) {
+        u8 currentTunic = Player_GetAdultTunic();
+        Player_ReinitAdultTunicSkel(globalCtx, PLAYER, currentTunic);
+        sLastAdultTunic = currentTunic;
+    }
+    sPrevPauseState = pauseState;
+
     if (gSaveContext.linkAge == AGE_ADULT) {
         u8 currentTunic = Player_GetAdultTunic();
         if (currentTunic != sLastAdultTunic) {
