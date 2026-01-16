@@ -8,7 +8,6 @@
 #define PlayerActor_Destroy ((ActorFunc)GAME_ADDR(0x19262C))
 #define PlayerActor_Draw ((ActorFunc)GAME_ADDR(0x4BF618))
 
-// Tunic-specific adult model indices inside zelda_link_boy_new.zar.
 #define LINK_ADULT_BODY_CMB_INDEX 0
 #define LINK_ADULT_GORON_BODY_CMB_INDEX 4
 #define LINK_ADULT_ZORA_BODY_CMB_INDEX 5
@@ -92,7 +91,6 @@ void PlayerActor_rUpdate(Actor* thisx, GlobalContext* globalCtx) {
     PlayerActor_Update(thisx, globalCtx);
     u32 pauseState = PauseContext_GetState();
 
-    // If the pause menu just closed, refresh the tunic immediately to pick up gear changes.
     if (sPrevPauseState != 0 && pauseState == 0 && gSaveContext.linkAge == AGE_ADULT) {
         u8 currentTunic = Player_GetAdultTunic();
         Player_ReinitAdultTunicSkel(globalCtx, PLAYER, currentTunic);
