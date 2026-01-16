@@ -328,6 +328,53 @@ SECTIONS
 		*(.patch_PlayerEditAndRetrieveCMB)
 	}
 
+	/* Patch call sites of Player_SetEquipmentData to call our wrapper (adult tunic CMB swaps). */
+	.patch_Player_PostUpdate_Call_1E1D68 0x1E1D68 : {
+		*(.patch_Player_PostUpdate_Call_1E1D68)
+	}
+	.patch_PlayerActorUpdate_End_1E1DB8 0x1E1DB8 : {
+		*(.patch_PlayerActorUpdate_End_1E1DB8)
+	}
+	.patch_Player_SetEquipmentData_Call_44E5A8 0x44E5A8 : {
+		*(.patch_Player_SetEquipmentData_Call_44E5A8)
+	}
+	.patch_Player_SetEquipmentData_Call_191A3C 0x191A3C : {
+		*(.patch_Player_SetEquipmentData_Call_191A3C)
+	}
+	.patch_Player_SetEquipmentData_Call_2E9BF0 0x2E9BF0 : {
+		*(.patch_Player_SetEquipmentData_Call_2E9BF0)
+	}
+	.patch_Player_SetEquipmentData_Call_2E9C94 0x2E9C94 : {
+		*(.patch_Player_SetEquipmentData_Call_2E9C94)
+	}
+	.patch_Player_SetEquipmentData_Call_2E9D28 0x2E9D28 : {
+		*(.patch_Player_SetEquipmentData_Call_2E9D28)
+	}
+	.patch_Player_SetEquipmentData_Call_34D744 0x34D744 : {
+		*(.patch_Player_SetEquipmentData_Call_34D744)
+	}
+	.patch_Player_SetEquipmentData_Call_35D22C 0x35D22C : {
+		*(.patch_Player_SetEquipmentData_Call_35D22C)
+	}
+	.patch_Player_SetEquipmentData_Call_43456C 0x43456C : {
+		*(.patch_Player_SetEquipmentData_Call_43456C)
+	}
+	.patch_Player_SetEquipmentData_Call_4345A0 0x4345A0 : {
+		*(.patch_Player_SetEquipmentData_Call_4345A0)
+	}
+	.patch_Player_SetEquipmentData_Call_4345FC 0x4345FC : {
+		*(.patch_Player_SetEquipmentData_Call_4345FC)
+	}
+	.patch_Player_SetEquipmentData_Call_434630 0x434630 : {
+		*(.patch_Player_SetEquipmentData_Call_434630)
+	}
+	.patch_Player_SetEquipmentData_Call_492104 0x492104 : {
+		*(.patch_Player_SetEquipmentData_Call_492104)
+	}
+	.patch_Player_SetEquipmentData_Call_49211C 0x49211C : {
+		*(.patch_Player_SetEquipmentData_Call_49211C)
+	}
+
 	.patch_AdultItemsCMABsAsChild 0x191BB0 : {
 		*(.patch_AdultItemsCMABsAsChild)
 	}
